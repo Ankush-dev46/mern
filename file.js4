@@ -1,0 +1,112 @@
+File.js
+const fs = require('fs');
+const path = require('path');
+
+// Define the directory where files will be stored
+const dataDir = path.join(__dirname, 'file');
+
+// Ensure the data directory exists
+if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir);
+}
+
+// Function to create a new file
+function createFile(filename, data, callback) {
+    const filePath = path.join(dataDir, filename);
+
+    fs.writeFile(filePath, data, err => {
+        if (err) {
+            callback(err);
+            return;
+        }
+        callback(null, 'File created successfully.');
+    });
+}
+
+// Function to read a file
+function readFile(filename, callback) {
+    const filePath = path.join(dataDir, filename);
+
+    fs.readFile(filePath, 'utf8', (err, data) => {
+        if (err) {
+            callback(err);
+            return;
+        }
+        callback(null, data);
+    });
+}
+
+// Function to update a file
+function updateFile(filename, newData, callback) {
+    const filePath = path.join(dataDir, filename);
+
+    fs.writeFile(filePath, newData, err => {
+        if (err) {
+            callback(err);
+            return;
+        }
+        callback(null, 'File updated successfully.');
+    });
+}
+
+// Function to delete a file
+function deleteFile(filename, callback) {
+    const filePath = path.join(dataDir, filename);
+
+    fs.unlink(filePath, err => {
+        if (err) {
+            callback(err);
+            return;
+        }
+        callback(null, 'File deleted successfully.');
+    });
+}
+
+// Example usage:
+const filename = 'example.txt';
+const fileData = 'This is example data.';
+
+// Create a file
+createFile(filename, fileData, (err, message) => {
+    if (err) {
+        console.error('Error:', err);
+        return;
+    }
+    console.log(message);
+
+   // Read the file
+    readFile(filename, (err, data) => {
+        if (err) {
+            console.error('Error: ',err);
+            return;
+        }
+        console.log('File content:', data);
+
+        // Update the file
+        const newData = 'New File data.';
+        updateFile(filename, newData, (err, message) => {
+            if (err) {
+                console.error('Error:', err);
+                return;
+            }
+            console.log(message);
+            // Read the updated file
+            readFile(filename, (err, data) => {
+                if (err) {
+                    console.error('Error:', err);
+                    return;
+                }
+                console.log('Updated file content:', data);
+
+                // Delete the file
+                deleteFile(filename, (err, message) => {
+                    if (err) {
+                        console.error('Error:', err);
+                        return;
+                    }
+                    console.log(message);
+                });
+            });
+        });
+    });
+});
