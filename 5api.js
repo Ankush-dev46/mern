@@ -1,39 +1,30 @@
-App_API.js
-import { useEffect, useState } from 'react';
-import './App.css';
+import {useState} from 'react';
+function App(){
+    const initiallist=['abcd','xyax','asdf','klhj'];
+    const [list,updatelist]=useState(initiallist);
+    const filterlist=(event)=>{
+        const filtered=[];
+        if(event.target.value){
+            for(let i=0;i<initiallist.length,i++) {
+                if(initiallist[i].includes(event.target.value))
+                    filtered.push(initiallist[i]);
+            }
+            updatelist(filtered)
+        }
+        else
+            updatelist(initiallist);
+    };
+    return(
+        <div className="App">
+            <label>Search: </label>
+            <input type = 'text' onChange={(e)=>filterlist(e)}/>
+            {(list)?<ul>
+                {list.map((element,key)=>{
+                    return(<li key={key}>{element}</li>)
+                })}
+            </ul>:<></>}
+        </div>
 
-function App() {
-  const [data, setData] = useState(null);
-  const fetchData = async () => {
-    try {
-      const response = await fetch('https://dummy.restapiexample.com/api/v1/employees');
-      const apiData = await response.json();
-      setData(apiData['data']);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-  useEffect(() => {
-    fetchData();
-  }, []);
-  return (
-    <div className="App">
-      {data && (<table>
-        <tr>
-          {Object.keys(data[0]).map((keys) => {
-            return (<th>{keys}</th>)
-          })}
-        </tr>
-        {data.map((rowData) => {
-          return (<tr>
-            {Object.values(rowData).map((cellData) => {
-              return (<td>{cellData}</td>)
-            })}
-          </tr>)
-        })}
-      </table>)}
-    </div>
-  );
+    );
 }
-
 export default App;
